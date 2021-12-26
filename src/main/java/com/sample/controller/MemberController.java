@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,8 @@ import com.sample.model.Member;
 import com.sample.repository.MemberRepository;
 
 @RestController
-@CrossOrigin(value = {"http://localhost:4200", "http://localhost:3000", "http://localhost:8081"})
+@CrossOrigin(value = {"http://localhost:4200", "http://localhost:3000",
+		"http://localhost:8081"})
 @RequestMapping("/api/v1/")
 public class MemberController {
 
@@ -30,13 +32,15 @@ public class MemberController {
 	
 	@GetMapping("/members")
 	public List<Member> getAllMembers(){
+		memberRepository.findAll().forEach((mem) -> mem.setPassword("Press New Pwd"));
 		return memberRepository.findAll();
 	}
 	
 	@PostMapping("/members")
 	public Member createMember(@RequestBody Member member) {
+		String pwd = new BCryptPasswordEncoder().encode(member.getPassword());
+		member.setPassword(pwd);
 		return memberRepository.save(member);
-		
 	}
 	
 	@GetMapping("/members/id/{id}")
@@ -44,13 +48,17 @@ public class MemberController {
 		
 		 Member member = memberRepository.findById(id).
 				orElseThrow(() -> new ResourceNotFoundException("Member Not Found"));
+		 member.setPassword("Press New Pwd");
 		 return ResponseEntity.ok(member);
 	}
 	
 	@GetMapping("/members/userName/{userName}")
 	public ResponseEntity<Member> getMemberByuserName(@PathVariable String userName) {
+		
 		 Member member = memberRepository.findByuserName(userName).
 				orElseThrow(() -> new ResourceNotFoundException("Member Not Found"));
+		 member.setPassword("Press New Pwd");
+		 
 		 return ResponseEntity.ok(member);
 	}
 	
@@ -58,9 +66,15 @@ public class MemberController {
 	public ResponseEntity<Member> updateMember(@PathVariable Long id, @RequestBody Member memberDetails){
 		Member member = memberRepository.findById(id).
 				orElseThrow(() -> new ResourceNotFoundException("Member Not Found"));
+		
+		String encodePwd = new BCryptPasswordEncoder()
+				.encode(memberDetails.getPassword());
+		
+		member.setPassword(encodePwd);
 		member.setEmailId(memberDetails.getEmailId());
 		member.setFirstName(memberDetails.getFirstName());
 		member.setLastName(memberDetails.getLastName());
+		member.setUserName(memberDetails.getUserName());
 		
 		Member updatedEmployee = memberRepository.save(member);
 		return ResponseEntity.ok(updatedEmployee);
