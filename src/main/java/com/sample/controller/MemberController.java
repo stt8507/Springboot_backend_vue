@@ -21,9 +21,9 @@ import com.sample.exception.ResourceNotFoundException;
 import com.sample.model.Member;
 import com.sample.repository.MemberRepository;
 
+
 @RestController
-@CrossOrigin(value = {"http://localhost:4200", "http://localhost:3000",
-		"http://localhost:8081"})
+@CrossOrigin
 @RequestMapping("/api/v1/")
 public class MemberController {
 

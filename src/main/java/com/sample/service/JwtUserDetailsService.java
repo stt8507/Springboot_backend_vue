@@ -1,7 +1,5 @@
 package com.sample.service;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.sample.config.MemberDetailService;
 import com.sample.model.Member;
 import com.sample.repository.MemberRepository;
 
@@ -25,6 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 				.orElseThrow(() -> 
 				new UsernameNotFoundException("User not found with username: " + username));
 		
-		return new User(userMem.getUserName(), userMem.getPassword(), new ArrayList<>());
+		return new User(userMem.getUserName(), userMem.getPassword(),
+				MemberDetailService.createAuthorities(userMem));
 	}
 }
