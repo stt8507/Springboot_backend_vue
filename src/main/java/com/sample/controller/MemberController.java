@@ -54,9 +54,10 @@ public class MemberController {
 	
 	@GetMapping("/members/userName/{userName}")
 	public ResponseEntity<Member> getMemberByuserName(@PathVariable String userName) {
-		
+		 
 		 Member member = memberRepository.findByuserName(userName).
 				orElseThrow(() -> new ResourceNotFoundException("Member Not Found"));
+		
 		 member.setPassword("Press New Pwd");
 		 
 		 return ResponseEntity.ok(member);

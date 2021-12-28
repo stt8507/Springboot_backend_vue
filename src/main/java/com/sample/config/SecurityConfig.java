@@ -29,6 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
+	
+	@Autowired
+	private WebSecurityCorsFilter webSecurityCorsFilter;
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -70,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Add a filter to validate the tokens with every request
 		httpSecurity.addFilterBefore(jwtRequestFilter,
 				UsernamePasswordAuthenticationFilter.class);
-		httpSecurity.addFilterBefore(new WebSecurityCorsFilter(),
+		httpSecurity.addFilterBefore(webSecurityCorsFilter,
 				ChannelProcessingFilter.class);
 
 		
