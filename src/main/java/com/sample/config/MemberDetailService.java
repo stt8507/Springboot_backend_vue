@@ -15,6 +15,6 @@ public class MemberDetailService {
 	
 	public static Collection<? extends GrantedAuthority> createAuthorities(
 			Member member) {
-		return USER_ROLES; //否則則為一般使用者
+		return USER_ROLES; //一般使用者
 	}
 }
